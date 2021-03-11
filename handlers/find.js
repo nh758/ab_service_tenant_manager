@@ -11,6 +11,28 @@ module.exports = {
    key: "tenant_manager.find",
 
    /**
+    * inputValidation
+    * define the expected inputs to this service handler:
+    * Format:
+    * "parameterName" : {
+    *    {joi.fn}   : {bool},  // performs: joi.{fn}();
+    *    {joi.fn}   : {
+    *       {joi.fn1} : true,   // performs: joi.{fn}().{fn1}();
+    *       {joi.fn2} : { options } // performs: joi.{fn}().{fn2}({options})
+    *    }
+    *    // examples:
+    *    "required" : {bool},  // default = false
+    *
+    *    // custom:
+    *        "validation" : {fn} a function(value, {allValues hash}) that
+    *                       returns { error:{null || {new Error("Error Message")} }, value: {normalize(value)}}
+    * }
+    */
+   inputValidation: {
+      key: { string: true, required: true },
+   },
+
+   /**
     * fn
     * our Request handler.
     * @param {obj} req
@@ -23,41 +45,10 @@ module.exports = {
 
       var config = req.config();
 
-      // // if config not set, we have not be initialized properly.
-      // if (!config) {
-      //    req.log("WARN: tenant_manager.find handler not setup properly.");
-      //    err = new Error("tenant_manager.find: Missing config");
-      //    err.code = "EMISSINGCONFIG";
-      //    err.req = req;
-      //    cb(err);
-      //    return;
-      // }
-
-      // // check if we are enabled
-      // if (!config.enable) {
-      //    // we shouldn't be getting notification.email messages
-      //    req.log(
-      //       "WARN: tenant_manager job received, but config.enable is false."
-      //    );
-      //    err = new Error("tenant_manager.find service is disabled.");
-      //    err.code = "EDISABLED";
-      //    cb(err);
-      //    return;
-      // }
-
       // verify required parameters in job
       var key = req.param("key");
-      // if (!key) {
-      //    var err2 = new Error(
-      //       ".key parameter required in tenant_manager.find service."
-      //    );
-      //    err2.code = "EMISSINGPARAM";
-      //    cb(err2);
-      //    return;
-      // }
 
       // access any Models you need
-
       var Tenant = req.model("Tenant");
       Tenant.find({ key: key })
          .then((list) => {
@@ -65,11 +56,4 @@ module.exports = {
          })
          .catch(cb);
    },
-
-   inputValidation: {
-      key: {
-         required: true,
-         validation: { type: "string" }
-      }
-   }
 };

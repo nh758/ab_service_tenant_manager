@@ -11,6 +11,28 @@ module.exports = {
    key: "tenant_manager.config",
 
    /**
+    * inputValidation
+    * define the expected inputs to this service handler:
+    * Format:
+    * "parameterName" : {
+    *    {joi.fn}   : {bool},  // performs: joi.{fn}();
+    *    {joi.fn}   : {
+    *       {joi.fn1} : true,   // performs: joi.{fn}().{fn1}();
+    *       {joi.fn2} : { options } // performs: joi.{fn}().{fn2}({options})
+    *    }
+    *    // examples:
+    *    "required" : {bool},  // default = false
+    *
+    *    // custom:
+    *        "validation" : {fn} a function(value, {allValues hash}) that
+    *                       returns { error:{null || {new Error("Error Message")} }, value: {normalize(value)}}
+    * }
+    */
+   inputValidation: {
+      uuid: { string: true, /*{ uuid: true },*/ required: true },
+   },
+
+   /**
     * fn
     * our Request handler.
     * @param {obj} req
@@ -26,12 +48,6 @@ module.exports = {
       // var config = req.config();
 
       var uuid = req.param("uuid");
-      if (!uuid) {
-         var err = new Error("missing param: uuid");
-
-         cb(err);
-         return;
-      }
 
       // access any Models you need
       var Tenant = req.model("Tenant");
@@ -41,7 +57,7 @@ module.exports = {
             if (tenant) {
                cb(null, {
                   id: tenant.uuid,
-                  options: tenant.properties
+                  options: tenant.properties,
                });
             } else {
                req.log(`no Tenant found for uuid(${uuid})`);
@@ -53,30 +69,11 @@ module.exports = {
                   id: "default",
                   options: {
                      title: "AppBuilder",
-                     textClickToEnter: "Click to Enter the AppBuilder"
-                  }
+                     textClickToEnter: "Click to Enter the AppBuilder",
+                  },
                });
             }
          })
          .catch(cb);
    },
-
-   /**
-    * inputValidation
-    * define the expected inputs to this service handler:
-    * Format:
-    * "parameterName" : {
-    *    "required" : {bool},  // default = false
-    *    "validation" : {fn|obj}, 
-    *                   {fn} a function(value) that returns true/false if 
-    *                        the value if valid.
-    *                   {obj}: .type: {string} the data type
-    }
-    */
-   inputValidation: {
-      uuid: {
-         required: true,
-         validation: { type: "string" }
-      }
-   }
 };
