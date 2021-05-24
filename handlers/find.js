@@ -50,7 +50,8 @@ module.exports = {
 
       // access any Models you need
       var Tenant = req.model("Tenant");
-      Tenant.find({ key: key })
+
+      req.retry(() => Tenant.find({ key: key }))
          .then((list) => {
             cb(null, list[0]);
          })

@@ -51,7 +51,7 @@ module.exports = {
 
       // access any Models you need
       var Tenant = req.model("Tenant");
-      Tenant.find({ uuid })
+      req.retry(() => Tenant.find({ uuid }))
          .then((list) => {
             var tenant = list[0];
             if (tenant) {

@@ -21,7 +21,7 @@ module.exports = {
       var err;
 
       var Tenant = req.model("Tenant");
-      Tenant.find({})
+      req.retry(() => Tenant.find({}))
          .then((tenants) => {
             // the list of tenants returned for our config.list
             // is a simple set of data:
@@ -31,7 +31,7 @@ module.exports = {
                var item = {
                   uuid: t.uuid,
                   key: t.key,
-                  title: t.properties.title
+                  title: t.properties.title,
                };
                list.push(item);
             });
@@ -39,5 +39,5 @@ module.exports = {
             cb(null, list);
          })
          .catch(cb);
-   }
+   },
 };
