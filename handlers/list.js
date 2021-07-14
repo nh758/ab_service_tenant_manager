@@ -2,6 +2,7 @@
  * list
  * our Request handler.
  */
+const queryFindAllTenants = require("../queries/findAllTenants.js");
 
 module.exports = {
    /**
@@ -18,10 +19,7 @@ module.exports = {
     *        a node style callback(err, results) to send data when job is finished
     */
    fn: function handler(req, cb) {
-      var err;
-
-      var Tenant = req.model("Tenant");
-      req.retry(() => Tenant.find({}))
+      queryFindAllTenants(req)
          .then((tenants) => {
             // the list of tenants returned for our config.list
             // is a simple set of data:

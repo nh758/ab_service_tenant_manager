@@ -2,7 +2,17 @@
  * config
  * our Request handler.
  */
-var config;
+const queryFindTenantByUUID = require("../queries/findTenantByUUID.js");
+
+function returnDefaultTenant(cb) {
+   cb(null, {
+      id: "default",
+      options: {
+         title: "AppBuilder",
+         textClickToEnter: "Click to Enter the AppBuilder",
+      },
+   });
+}
 
 module.exports = {
    /**
@@ -41,17 +51,12 @@ module.exports = {
     *        a node style callback(err, results) to send data when job is finished
     */
    fn: function handler(req, cb) {
-      var err;
-
       req.log("tenant_manager.config()");
-
-      // var config = req.config();
 
       var uuid = req.param("uuid");
 
       // access any Models you need
-      var Tenant = req.model("Tenant");
-      req.retry(() => Tenant.find({ uuid }))
+      queryFindTenantByUUID(req, uuid)
          .then((list) => {
             var tenant = list[0];
             if (tenant) {
@@ -65,15 +70,20 @@ module.exports = {
                // Q: do we return our Default entry when one can't be
                // found?
 
-               cb(null, {
-                  id: "default",
-                  options: {
-                     title: "AppBuilder",
-                     textClickToEnter: "Click to Enter the AppBuilder",
-                  },
-               });
+               returnDefaultTenant(cb);
             }
          })
-         .catch(cb);
+         .catch((err) => {
+            // it is possible this is run before a Tenant is resolved.
+            // if that is the returned error, then we return our
+            // "default" entry.
+
+            if (err.code == "ENOTENANT") {
+               returnDefaultTenant(cb);
+               return;
+            }
+            console.log(err);
+            cb(err);
+         });
    },
 };
