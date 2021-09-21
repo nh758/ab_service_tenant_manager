@@ -285,14 +285,14 @@ function sqlInsert(commandIn, req, cb) {
    var command = `${lines[0]} VALUES ( ?`;
 
    var numValues = command.split(",");
-   numValues.shift();
+   numValues.shift(); // we've already added the first '?'
    numValues.forEach((/* v */) => {
       command = command + ", ?";
    });
    command += " );";
 
    req.log(command);
-   allValues = sqlProcessValues(lines[1] + ";");
+   var allValues = sqlProcessValues(lines[1] + ";");
 
    sqlInsertOne(command, allValues, req, (err) => {
       if (err) {
