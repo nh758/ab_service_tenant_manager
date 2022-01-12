@@ -235,6 +235,7 @@ module.exports = {
 function sqlCommands(commands, req, cb) {
    if (commands.length == 0) {
       req.log("import commands complete.");
+      req.queryIsolateClose();
       cb();
    } else {
       req.log("running import command: ", commands.length);
@@ -250,7 +251,7 @@ function sqlCommands(commands, req, cb) {
       // if NOT an INSERT just run it:
       if (next.indexOf("INSERT INTO") == -1) {
          req.log(next);
-         req.query(next, null, (err) => {
+         req.queryIsolate(next, null, (err) => {
             if (err) {
                return cb(err);
             }
@@ -320,7 +321,7 @@ function sqlInsertOne(command, allValues, req, cb) {
    } else {
       req.log("... inserting ", allValues.length);
       var values = allValues.shift();
-      req.query(command, values, (err) => {
+      req.queryIsolate(command, values, (err) => {
          if (err) {
             return cb(err);
          }
