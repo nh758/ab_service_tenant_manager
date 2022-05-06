@@ -41,6 +41,7 @@ module.exports = {
       username: { string: true, required: true },
       password: { string: true, required: true },
       email: { string: { email: true }, required: true },
+      url: { string: true, required: true },
    },
 
    /**
@@ -78,6 +79,7 @@ module.exports = {
                   key: req.param("key"),
                   title: req.param("title"),
                   authType: req.param("authType"),
+                  url: req.param("url"),
                };
                sqlCreateTenant(req, data)
                   .then((/* sqlResults */) => {
@@ -98,6 +100,7 @@ module.exports = {
                AdminData["##admin-uuid##"] = AB.uuid();
                AdminData["##admin-username##"] = req.param("username");
                AdminData["##admin-email##"] = req.param("email");
+               AdminData["##admin-url##"] = req.param("url");
 
                // Now find the password/salt
                req.serviceRequest(

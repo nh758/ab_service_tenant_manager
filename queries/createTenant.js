@@ -19,7 +19,9 @@ module.exports = function (req, data) {
       var values = [];
       values.push(AB.uuid()); // uuid
       values.push(data.key); // key
-      values.push(`{ "title":"${data.title}", "authType":"${data.authType}" }`);
+      values.push(
+         `{ "title":"${data.title}", "authType":"${data.authType}", "url":"${data.url}" }`
+      );
 
       req.query(sql, values, (error, results, fields) => {
          if (error) {
