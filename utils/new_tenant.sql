@@ -405,8 +405,8 @@ CREATE TABLE `SITE_SCOPE` (
   `updated_at` datetime DEFAULT NULL,
   `properties` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `translations` text COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Objects` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Filters` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `objectIds` longtext COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Filters` longtext COLLATE utf8_unicode_ci DEFAULT NULL,
   `allowAll` tinyint(1) DEFAULT NULL,
   `createdBy` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`uuid`),
@@ -417,7 +417,7 @@ CREATE TABLE `SITE_SCOPE` (
 LOCK TABLES `SITE_SCOPE` WRITE;
 /*!40000 ALTER TABLE `SITE_SCOPE` DISABLE KEYS */;
 
-INSERT INTO `SITE_SCOPE` (`uuid`, `created_at`, `updated_at`, `properties`, `translations`, `createdBy`, `Objects`, `Filters`, `allowAll`)
+INSERT INTO `SITE_SCOPE` (`uuid`, `created_at`, `updated_at`, `properties`, `translations`, `createdBy`, `objectIds`, `Filters`, `allowAll`)
 VALUES
   ('838beeb9-0a13-4b0f-9780-0d47e67f3752','2020-05-13 09:49:53',NULL,NULL,'[{\"language_code\":\"en\",\"name\":\"All Access\",\"description\":\"Provide Full Data Access to All Objects.\"}]','##admin-username##',NULL,NULL,1);
 
