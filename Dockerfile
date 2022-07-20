@@ -1,5 +1,5 @@
 ##
-## digiserve/ab-tenant-manager:master
+## digiserve/ab-tenant-manager
 ##
 ## This is our microservice for managing our tenant data and operations.
 ##
@@ -9,9 +9,15 @@
 ## $ docker push digiserve/ab-tenant-manager:master
 ##
 
-FROM digiserve/service-cli:master
+ARG BRANCH=master
 
-RUN git clone --recursive https://github.com/digi-serve/ab_service_tenant_manager.git app && cd app && git checkout develop && npm install
+FROM digiserve/service-cli:${BRANCH}
+
+COPY . /app
+
+WORKDIR /app
+
+RUN npm i -f
 
 WORKDIR /app
 
