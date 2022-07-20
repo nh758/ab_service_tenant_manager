@@ -2,7 +2,7 @@
  * find
  * our Request handler.
  */
-var config;
+const queryFindTenantByKey = require("../queries/findTenantByKey.js");
 
 module.exports = {
    /**
@@ -41,17 +41,10 @@ module.exports = {
     *        a node style callback(err, results) to send data when job is finished
     */
    fn: function handler(req, cb) {
-      var err;
-
-      var config = req.config();
-
       // verify required parameters in job
       var key = req.param("key");
 
-      // access any Models you need
-      var Tenant = req.model("Tenant");
-
-      req.retry(() => Tenant.find({ key: key }))
+      queryFindTenantByKey(req, key)
          .then((list) => {
             cb(null, list[0]);
          })
