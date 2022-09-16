@@ -6,7 +6,7 @@
   "author": "Johnny Hausman",
   "license": "MIT",
   "dependencies": {
-    "ab-utils": "github:hiro-nakamura/ab-utils",
+    "ab-utils": "github:digi-serve/ab-utils",
     "cote": "^1.0.0",
     "lodash": "^4.17.20"
   },
