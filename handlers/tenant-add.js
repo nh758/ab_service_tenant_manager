@@ -2,7 +2,7 @@
  * tenant-add
  * our Request handler.
  */
-const AB = require("ab-utils");
+const AB = require("@digiserve/ab-utils");
 const async = require("async");
 const fs = require("fs");
 const path = require("path");
