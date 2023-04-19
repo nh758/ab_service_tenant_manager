@@ -1,4 +1,4 @@
-const AB = require("ab-utils");
+const AB = require("@digiserve/ab-utils");
 
 module.exports = function (req, data) {
    return new Promise((resolve, reject) => {
