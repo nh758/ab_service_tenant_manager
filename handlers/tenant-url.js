@@ -55,6 +55,7 @@ module.exports = {
                });
             } else {
                req.log(`no Tenant found for uuid(${uuid})`);
+               cb(null, null);
             }
          })
          .catch(cb);
