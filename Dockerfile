@@ -19,6 +19,4 @@ WORKDIR /app
 
 RUN npm i -f
 
-WORKDIR /app
-
 CMD [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
