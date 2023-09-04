@@ -7,7 +7,7 @@ permissions:
   contents: write
 jobs:
   call-get-label:
-    name: Get Release
+    name: Label
     uses: digi-serve/.github/.github/workflows/get-pr-release-label.yml@master
   call-e2e-tests:
     name: Test
@@ -35,7 +35,7 @@ jobs:
           body: ${{ github.event.pull_request.body }}
           token: ${{ secrets.GITHUB_TOKEN }}
   call-docker-build:
-    uses: digi-serve/.github/.github/workflows/docker-build.yml@master
+    uses: digi-serve/.github/.github/workflows/docker-build.yml@nh/common-workflows
     needs: [call-bump-version]
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
