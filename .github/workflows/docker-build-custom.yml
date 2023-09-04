@@ -18,5 +18,7 @@ jobs:
     with:
       base_tag: ${{ inputs.base_tag }}
       tags: ${{ inputs.tags }}
-    secrets: inherit
+    secrets: 
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     

@@ -3,6 +3,8 @@ on:
   pull_request:
     types: [closed]
     branches: [master]
+permissions:
+  contents: write
 jobs:
   call-get-label:
     name: Get Release
@@ -35,10 +37,12 @@ jobs:
   call-docker-build:
     uses: digi-serve/.github/.github/workflows/docker-build.yml@master
     needs: [call-bump-version]
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     with:
       base_tag: master
       tags: master, develop, ${{ needs.call-bump-version.outputs.new_version }}
-    secrets: inherit
   dispatch-runtime-update:
     name: Dipsatch AB Runtime Update
     needs: [ call-docker-build, call-bump-version, call-get-label ]
