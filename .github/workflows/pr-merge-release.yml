@@ -51,9 +51,11 @@ jobs:
       - name: Get short name
         id: short-name
         env:
-          REPO: ${{ github.repo }}
-          REGX:  /ab_service_(.+)/
-        run: echo "service=$(echo $REPO | gawk '{ match($0, $REGX, a); print a[1] }')" >> "$GITHUB_OUTPUT"
+          REPO: ${{ github.repository }}
+          REGX:  /ab_service_(.+)
+        run: |
+          [[ $REPO =~ $REGX ]]
+          echo "service=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         env: 
