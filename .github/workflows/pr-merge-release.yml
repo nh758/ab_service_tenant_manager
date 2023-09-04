@@ -1,0 +1,81 @@
+name: PR Merged
+on:
+  pull_request:
+    types: [closed]
+    branches: [master]
+permissions:
+  contents: write
+jobs:
+  call-get-label:
+    name: Label
+    uses: digi-serve/.github/.github/workflows/get-pr-release-label.yml@nh/common-workflows
+  call-e2e-tests:
+    name: Test
+    needs: [call-get-label]
+    # Only run if the PR closed by merging and we have a label
+    if: ${{ github.event.pull_request.merged && needs.call-get-label.outputs.valid == 'true' }}
+    uses: digi-serve/.github/.github/workflows/cypress-e2e-tests.yml@nh/common-workflows
+  call-bump-version:
+    name: Version
+    # Only run if tests pass 
+    needs: [ call-get-label, call-e2e-tests ]
+    uses: digi-serve/.github/.github/workflows/bump-version.yml@nh/common-workflows
+    with:
+      ref: ${{ github.ref }}
+      type: ${{ needs.call-get-label.outputs.label }}
+  create-release:
+    name: Create Release
+    needs: call-bump-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Release Notes
+        id: release-notes
+        uses: actions/github-script@v6
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        with:
+          script: |
+            const body = process.env.PR_BODY;
+            const regex = /<!-- #release_notes -->\n?(.*)<!-- \/release_notes -->/s
+            const match = body.match(regex);
+            core.setOuput("notes", match.[1])
+      - name: Create release on GitHub
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{ needs.call-bump-version.outputs.new_version }}
+          body: ${{ steps.release-notes.outputs.notes }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+  # call-docker-build:
+  #   uses: digi-serve/.github/.github/workflows/docker-build.yml@nh/common-workflows
+  #   needs: [call-bump-version]
+  #   secrets:
+  #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  #   with:
+  #     base_tag: master
+  #     tags: master, develop, ${{ needs.call-bump-version.outputs.new_version }}
+  # dispatch-runtime-update:
+  #   name: Dipsatch AB Runtime Update
+  #   needs: [ call-docker-build, call-bump-version, call-get-label ]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Get short name
+  #       id: short-name
+  #       env:
+  #         REPO: ${{ github.repository }}
+  #         REGX:  /ab_service_(.+)
+  #       run: |
+  #         [[ $REPO =~ $REGX ]]
+  #         echo "service=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+  #     - name: Repository Dispatch
+  #       uses: peter-evans/repository-dispatch@v2
+  #       env: 
+  #         TYPE: ${{ needs.call-get-label.outputs.label }}
+  #         VERS: ${{ needs.call-bump-version.outputs.new_version }}
+  #         NAME: ${{ steps.short-name.outputs.service }}
+  #       with:
+  #         token: ${{ secrets.PAT }}
+  #         repository: digi-serve/ab_runtime
+  #         event-type: service_new_version
+  #         client-payload: '{"type": "${{ env.TYPE }}", "version": "${{ env.VERS }}", "service": "${{ env.NAME }}"}'
+          
