@@ -28,11 +28,22 @@ jobs:
     needs: call-bump-version
     runs-on: ubuntu-latest
     steps:
+      - name: Extract Release Notes
+        id: release-notes
+        uses: actions/github-script@v6
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        with:
+          script: |
+            const body = process.env.PR_BODY;
+            const regex = /<!-- #release_notes -->\n?(.*)<!-- \/release_notes -->/s
+            const match = body.match(regex);
+            core.setOuput("notes", match.[1])
       - name: Create release on GitHub
         uses: ncipollo/release-action@v1
         with:
           tag: v${{ needs.call-bump-version.outputs.new_version }}
-          body: ${{ github.event.pull_request.body }}
+          body: ${{ steps.release-notes.outputs.notes }}
           token: ${{ secrets.GITHUB_TOKEN }}
   call-docker-build:
     uses: digi-serve/.github/.github/workflows/docker-build.yml@nh/common-workflows
