@@ -37,8 +37,8 @@ jobs:
           script: |
             const body = process.env.PR_BODY;
             const regex = /<!-- #release_notes -->\n?(.*)<!-- \/release_notes -->/s
-            const match = body.match(regex);
-            core.setOuput("notes", match.[1])
+            const match = body.match(regex) ?? [];
+            core.setOutput("notes", match[1])
       - name: Create release on GitHub
         uses: ncipollo/release-action@v1
         with:
