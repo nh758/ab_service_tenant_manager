@@ -17,4 +17,5 @@ jobs:
       needs: call-e2e-tests
       if: ${{ github.actor == 'dependabot[bot]' }}
       uses: digi-serve/.github/.github/workflows/dependabot-merge.yml@master
-      secrets: inherit
+      secrets: 
+         DEPENDABOT_TOKEN: ${{ secrets.DEPENDABOT_TOKEN }}
