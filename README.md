@@ -1,4 +1,2 @@
-[![E2E Tests](https://github.com/digi-serve/ab_service_tenant_manager/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/digi-serve/ab_service_tenant_manager/actions/workflows/e2e-tests.yml) [![build-on-commit](https://github.com/digi-serve/ab_service_tenant_manager/actions/workflows/build-on-commit.yml/badge.svg)](https://github.com/digi-serve/ab_service_tenant_manager/actions/workflows/build-on-commit.yml)[![Total alerts](https://img.shields.io/lgtm/alerts/g/digi-serve/ab_service_tenant_manager.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/digi-serve/ab_service_tenant_manager/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/digi-serve/ab_service_tenant_manager.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/digi-serve/ab_service_tenant_manager/context:javascript)
 # ab_service_tenant_manager
 (AppBuilder) A service to manage the site&#39;s tenants
